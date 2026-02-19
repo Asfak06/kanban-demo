@@ -1,0 +1,24 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Status {
+  TODO
+  DOING
+  DONE
+}
+
+model Card {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  status      Status   @default(TODO)
+  order       Int
+  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now())
+}
