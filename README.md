@@ -81,24 +81,6 @@ Frontend runs on http://localhost:3000
 | `PORT`         | `4000`                                         | Server port              |
 | `FRONTEND_URL` | `http://localhost:3000`                         | CORS allowed origin      |
 
-### Using Supabase as Remote PostgreSQL
-
-Set backend `.env` like this:
-
-```dotenv
-DATABASE_URL=postgresql://postgres.[PROJECT-REF]:[PASSWORD]@aws-1-[REGION].pooler.supabase.com:5432/postgres?sslmode=require
-PORT=4000
-FRONTEND_URL=http://localhost:3000
-```
-
-- Use your Supabase connection string as `DATABASE_URL`.
-- Then run:
-
-```bash
-cd backend
-npx prisma db push
-npm run dev
-```
 
 ### Frontend (`frontend/.env.local`)
 
@@ -244,19 +226,13 @@ For this 2-user scenario, LWW provides the best balance of simplicity and correc
 > If this system needed to support 100,000 concurrent users, what would you change first and why?
 
 **1. Horizontally scale the WebSocket layer with Redis adapter.**
-Socket.IO alone runs in a single Node process. With 100K users, I'd add the `@socket.io/redis-adapter` so multiple server instances can broadcast events to all clients via a shared Redis pub/sub channel. This is the single most impactful change because the WebSocket layer is the bottleneck — REST APIs are inherently stateless and easier to scale behind a load balancer.
+At 100K users, one Socket.IO server will not be enough. In real-world Node.js setups, a single Socket.IO server often handles around 10,000 to 30,000 concurrent connections before performance starts to drop. I would first run several Socket.IO servers and connect them through Redis so all users still get the same live updates.
 
-**2. Connection-based architecture changes:**
-- **Sticky sessions** (via IP hash or cookie) on the load balancer so that Socket.IO's long-polling fallback works correctly.
-- **Room-based broadcasting** — instead of broadcasting to all connected sockets, scope events to board-specific rooms. This avoids sending irrelevant updates.
+- multiple Socket.IO instances behind a load balancer + `@socket.io/redis-adapter` for cross-node event fanout.
 
-**3. Database optimization:**
-- Add indexes on `(status, order)` for fast column queries.
-- Consider **read replicas** for the `GET /api/cards` endpoint.
-- Use **connection pooling** (e.g., PgBouncer) since each Node process would otherwise hold its own pool.
+Then I’d add a few safety improvements:
+- Keep each user connected to the same server during their session, and send updates only to people on the same board.
+- Make Redis reliable with backup/failover setup and good monitoring.
+- Protect the API and database with better query indexing, connection pooling, and limits on very frequent move requests.
 
-**4. Rate limiting & batching:**
-- Debounce rapid drag-and-drop events on the client to reduce API calls.
-- Add API rate limiting to protect the server.
-
-The first change (Redis adapter for Socket.IO) delivers the largest impact because it transforms the single-process WebSocket server into a horizontally scalable cluster, which is the primary constraint at 100K users.
+Why first: live socket connections become the main limit before the rest of the system.
