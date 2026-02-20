@@ -2,7 +2,8 @@
 
 A real-time Kanban board where two users can collaborate on the same board with instant synchronization. Built with Next.js, Express, PostgreSQL, Socket.IO, and Prisma.
 
-Here is a live demo: [http://159.198.36.104:3000/](http://159.198.36.104:3000/) (Note: Real-time updates may experience slight delays due to network and server limitations)
+Here is a live demo: [http://159.198.36.104:3000/](http://159.198.36.104:3000/) (Note: Real-time updates may experience slight delays due to network and server limitations. For better experience run this locally following the guides below.) 
+
 
 ## Login Credentials
 
@@ -15,7 +16,7 @@ Open two browser windows/tabs, log in as different users, and see changes sync i
 
 ---
 
-## Quick Start with Docker (Recommended)
+## Quick Start with Docker
 
 **Prerequisites:** Docker and Docker Compose installed.
 
