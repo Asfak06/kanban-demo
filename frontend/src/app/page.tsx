@@ -6,8 +6,7 @@ import LoginScreen from '@/components/LoginScreen';
 import Board from '@/components/Board';
 
 export default function Home() {
-  const user = useAuthStore((s) => s.user);
-  const setUser = useAuthStore((s) => s.setUser);
+  const { user, setUser } = useAuthStore();
   const [checkingSession, setCheckingSession] = useState(true);
 
   useEffect(() => {

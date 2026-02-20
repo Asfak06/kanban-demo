@@ -10,9 +10,9 @@ import Column from './Column';
 import CardModal from './CardModal';
 
 export default function Board() {
-  const userId = useAuthStore((s) => s.user?.id);
-  const userName = useAuthStore((s) => s.user?.name);
-  const logout = useAuthStore((s) => s.logout);
+  const { user, logout } = useAuthStore();
+  const userId = user?.id;
+  const userName = user?.name;
   const { fetchCards, moveCard, onCardCreated, onCardUpdated, onCardsMoved, loading } =
     useBoardCardStore();
 
