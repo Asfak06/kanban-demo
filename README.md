@@ -2,6 +2,8 @@
 
 A real-time Kanban board where two users can collaborate on the same board with instant synchronization. Built with Next.js, Express, PostgreSQL, Socket.IO, and Prisma.
 
+Here is a live demo: `https://159.198.36.104:3000/` (Note: Real-time updates may experience slight delays due to network and server limitations)
+
 ## Login Credentials
 
 | User    | Username | Password |
