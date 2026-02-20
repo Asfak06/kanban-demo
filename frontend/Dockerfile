@@ -7,6 +7,7 @@ RUN npm install
 
 COPY . .
 
+RUN mkdir -p /app/public
 ENV NEXT_PUBLIC_API_URL=http://localhost:4000
 RUN npm run build
 

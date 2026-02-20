@@ -22,6 +22,8 @@ Open two browser windows/tabs, log in as different users, and see changes sync i
 
 ```bash
 make up
+# or
+docker compose up -d --build
 ```
 
 This single command spins up PostgreSQL, the backend, and the frontend. Once ready:
@@ -31,8 +33,16 @@ This single command spins up PostgreSQL, the backend, and the frontend. Once rea
 
 ```bash
 make down    # Stop all services
+# or
+docker compose down
+
 make clean   # Stop and remove volumes (fresh DB)
+# or
+docker compose down -v
+
 make logs    # Tail logs from all services
+# or
+docker compose logs -f
 ```
 
 ---
